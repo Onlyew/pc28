@@ -1,8 +1,8 @@
-# 红淘淘网页下载器
+# 新加坡Pc28数据开奖数据采集
 
 ## 项目概述
 
-本项目是一个基于Spring Boot的Web应用，用于从红淘淘网站(http://www.redtaotao.com/jnd28_sf1_mszh.html)下载网页内容并保存到本地。项目结构设计遵循良好的解耦性和颗粒化原则，便于维护和扩展。
+本项目是一个基于Spring Boot的Web应用，用于获取新加坡Pc28数据开奖数据。项目结构设计遵循良好的解耦性和颗粒化原则，便于维护和扩展。
 
 ## 技术栈
 
@@ -42,7 +42,7 @@ src/main/java/org/pc28/
 
 ## 功能特点
 
-- 从红淘淘网站下载网页内容
+- 获取开奖载网页内容
 - 自动保存到本地文件
 - 提供RESTful API接口
 - 详细的API文档（Swagger UI）
@@ -140,7 +140,3 @@ httpclient.max-per-route=10
 
 本项目采用Apache 2.0许可证 - 查看[LICENSE](LICENSE)文件了解详情
 
-## 联系方式
-
-- 开发团队：support@example.com
-- 项目网站：https://www.example.com
