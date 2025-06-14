@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>现金流量分析</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        body {
+            font-family: "Microsoft YaHei", "Heiti SC", sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background-color: #1890ff;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header-left a {
+            color: white;
+            margin-right: 15px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .header-right a {
+            color: white;
+            margin-left: 15px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .dashboard-title {
+            background-color: #3076f6;
+            color: white;
+            padding: 15px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .selector-group {
+            display: flex;
+            align-items: center;
+        }
+        .selector {
+            margin-left: 10px;
+            min-width: 120px;
+        }
+        .data-panel {
+            background-color: white;
+            border-radius: 4px;
+            margin: 5px;
+            padding: 15px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            height: 100%;
+        }
+        .panel-title {
+            color: #1890ff;
+            font-size: 16px;
+            font-weight: bold;
+            border-left: 4px solid #1890ff;
+            padding-left: 10px;
+            margin-bottom: 10px;
+        }
+        .big-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #3076f6;
+            margin: 5px 0;
+        }
+        .comparison {
+            font-size: 13px;
+            color: #666;
+        }
+        .up-arrow {
+            color: #52c41a;
+        }
+        .down-arrow {
+            color: #f5222d;
+        }
+        .chart-container {
+            height: 140px;
+            width: 100%;
+        }
+        .pie-chart-container {
+            height: 200px;
+            width: 100%;
+        }
+        .trend-chart-container {
+            height: 180px;
+            width: 100%;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .data-table th {
+            background-color: #f0f2f5;
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #e8e8e8;
+        }
+        .data-table td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #e8e8e8;
+        }
+        .expandable-row {
+            cursor: pointer;
+        }
+        .expandable-row td:first-child {
+            position: relative;
+            padding-left: 25px;
+        }
+        .expandable-row td:first-child:before {
+            content: "+";
+            position: absolute;
+            left: 10px;
+            color: #1890ff;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <div class="header">
+        <div class="header-left">
+            <a href="#">企业财务分析</a>
+            <a href="#">图表</a>
+            <a href="#">指标</a>
+            <a href="#">经济分析</a>
+            <a href="#">预测与分析报告</a>
+        </div>
+        <div class="header-right">
+            <a href="#">下载中文版</a>
+            <a href="#">设置</a>
+        </div>
+    </div>
+    
+    <!-- 仪表盘标题 -->
+    <div class="dashboard-title">
+        <div>现金流量分析</div>
+        <div class="text-muted" style="font-size: 14px; font-weight: normal;">更新时间：每3个月进行上传更新</div>
+        <div class="selector-group">
+            <select class="form-control selector">
+                <option>4月</option>
+                <option>3月</option>
+                <option>2月</option>
+                <option>1月</option>
+            </select>
+            <select class="form-control selector">
+                <option>公司名称</option>
+                <option>部门</option>
+                <option>项目</option>
+            </select>
+        </div>
+    </div>
+    
+    <!-- 主要指标面板 -->
+    <div class="container-fluid">
+        <!-- 主要指标区域 -->
+        <div style="display: flex; flex-direction: column; gap: 5px;">
+            <!-- 主要指标(红框部分) - 左侧垂直排列的卡片 -->
+            <!-- 货币资金 -->
+            <div style="border-top: 1px solid #f0f0f0; border-bottom: 1px solid #f0f0f0; margin-bottom: 1px; background-color: white;">
+                <div style="display: flex; border-left: 4px solid #1890ff; padding: 10px;">
+                    <div style="width: 100%;">
+                        <div style="font-weight: bold; color: #1890ff; margin-bottom: 5px;">货币资金</div>
+                        <div style="font-size: 24px; font-weight: bold; color: #3076f6; margin: 5px 0;">4,453.78万元</div>
+                        <div style="font-size: 12px; color: #666;">
+                            同期值: 4,390.97万元<br>
+                            同比变化: <span style="color: #52c41a;">↑ 1.43%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 现金流净额 -->
+            <div style="border-bottom: 1px solid #f0f0f0; margin-bottom: 1px; background-color: white;">
+                <div style="display: flex; border-left: 4px solid #1890ff; padding: 10px;">
+                    <div style="width: 100%;">
+                        <div style="font-weight: bold; color: #1890ff; margin-bottom: 5px;">现金流净额</div>
+                        <div style="font-size: 24px; font-weight: bold; color: #3076f6; margin: 5px 0;">8,848.18万元</div>
+                        <div style="font-size: 12px; color: #666;">
+                            同期值: 6,651.61万元<br>
+                            同比变化: <span style="color: #52c41a;">↑ 33.02%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 经营性现金流净额 -->
+            <div style="border-bottom: 1px solid #f0f0f0; margin-bottom: 1px; background-color: white;">
+                <div style="display: flex; border-left: 4px solid #1890ff; padding: 10px;">
+                    <div style="width: 100%;">
+                        <div style="font-weight: bold; color: #1890ff; margin-bottom: 5px;">经营性现金流净额</div>
+                        <div style="font-size: 24px; font-weight: bold; color: #3076f6; margin: 5px 0;">8,816.27万元</div>
+                        <div style="font-size: 12px; color: #666;">
+                            同期值: 6,877.44万元<br>
+                            同比变化: <span style="color: #52c41a;">↑ 28.45%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 投资性现金流净额 -->
+            <div style="border-bottom: 1px solid #f0f0f0; margin-bottom: 1px; background-color: white;">
+                <div style="display: flex; border-left: 4px solid #1890ff; padding: 10px;">
+                    <div style="width: 100%;">
+                        <div style="font-weight: bold; color: #1890ff; margin-bottom: 5px;">投资性现金流净额</div>
+                        <div style="font-size: 24px; font-weight: bold; color: #3076f6; margin: 5px 0;">3,195.44万元</div>
+                        <div style="font-size: 12px; color: #666;">
+                            同期值: 5,146.57万元<br>
+                            同比变化: <span style="color: #f5222d;">↓ -37.91%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 筹资性现金流净额 -->
+            <div style="border-bottom: 1px solid #f0f0f0; margin-bottom: 1px; background-color: white;">
+                <div style="display: flex; border-left: 4px solid #1890ff; padding: 10px;">
+                    <div style="width: 100%;">
+                        <div style="font-weight: bold; color: #1890ff; margin-bottom: 5px;">筹资性现金流净额</div>
+                        <div style="font-size: 24px; font-weight: bold; color: #3076f6; margin: 5px 0;">6,639.88万元</div>
+                        <div style="font-size: 12px; color: #666;">
+                            同期值: 5,376.54万元<br>
+                            同比变化: <span style="color: #52c41a;">↑ 23.50%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 底部指标：固定资产、存货、应收账款、应付账款 (横向排列) -->
+            <div style="display: flex; gap: 5px;">
+                <div style="flex: 1; border: 1px solid #e8e8e8; background-color: white; padding: 8px;">
+                    <div style="border-left: 4px solid #1890ff; padding-left: 10px; font-weight: bold; color: #1890ff;">固定资产</div>
+                    <div style="font-size: 24px; font-weight: bold; color: #3076f6; margin: 5px 0;">6,603.25万元</div>
+                </div>
+                <div style="flex: 1; border: 1px solid #e8e8e8; background-color: white; padding: 8px;">
+                    <div style="border-left: 4px solid #1890ff; padding-left: 10px; font-weight: bold; color: #1890ff;">存货</div>
+                    <div style="font-size: 24px; font-weight: bold; color: #3076f6; margin: 5px 0;">6,074.70万元</div>
+                </div>
+                <div style="flex: 1; border: 1px solid #e8e8e8; background-color: white; padding: 8px;">
+                    <div style="border-left: 4px solid #1890ff; padding-left: 10px; font-weight: bold; color: #1890ff;">应收账款</div>
+                    <div style="font-size: 24px; font-weight: bold; color: #3076f6; margin: 5px 0;">7,478.84万元</div>
+                </div>
+                <div style="flex: 1; border: 1px solid #e8e8e8; background-color: white; padding: 8px;">
+                    <div style="border-left: 4px solid #1890ff; padding-left: 10px; font-weight: bold; color: #1890ff;">应付账款</div>
+                    <div style="font-size: 24px; font-weight: bold; color: #3076f6; margin: 5px 0;">8,413.80万元</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <!-- 现金流净额结构 -->
+            <div class="col-md-6">
+                <div class="data-panel">
+                    <div class="panel-title">现金流净额结构</div>
+                    <div id="chart-structure" class="chart-container"></div>
+                </div>
+            </div>
+            
+            <!-- 现金流额趋势 -->
+            <div class="col-md-6">
+                <div class="data-panel">
+                    <div class="panel-title">现金流额趋势</div>
+                    <div id="chart-trend" class="trend-chart-container"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <!-- 现金流流入结构 -->
+            <div class="col-md-6">
+                <div class="data-panel">
+                    <div class="panel-title">现金流流入结构</div>
+                    <div id="chart-inflow-pie" class="pie-chart-container"></div>
+                </div>
+            </div>
+            
+            <!-- 现金流流入趋势 -->
+            <div class="col-md-6">
+                <div class="data-panel">
+                    <div class="panel-title">现金流流入趋势</div>
+                    <div id="chart-inflow-trend" class="trend-chart-container"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <!-- 现金流流出结构 -->
+            <div class="col-md-6">
+                <div class="data-panel">
+                    <div class="panel-title">现金流流出结构</div>
+                    <div id="chart-outflow-pie" class="pie-chart-container"></div>
+                </div>
+            </div>
+            
+            <!-- 现金流流出趋势 -->
+            <div class="col-md-6">
+                <div class="data-panel">
+                    <div class="panel-title">现金流流出趋势</div>
+                    <div id="chart-outflow-trend" class="trend-chart-container"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <!-- 现金流量明细 -->
+            <div class="col-md-12">
+                <div class="data-panel">
+                    <div class="panel-title">现金流量明细</div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>现金流项目名称</th>
+                                <th>组织名称</th>
+                                <th>经营性现金流入金额_现金流</th>
+                                <th>经营性现金流出金额_现金流</th>
+                                <th>投资性现金流入金额_现金流</th>
+                                <th>投资性现金流出金额_现金流</th>
+                                <th>筹资性现金流入金额_现金流</th>
+                                <th>筹资性现金流出金额_现金流</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="expandable-row">
+                                <td>现金流项目1</td>
+                                <td></td>
+                                <td>6,339</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr class="expandable-row">
+                                <td>现金流项目10</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>5,856</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr class="expandable-row">
+                                <td>现金流项目11</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>5,129</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr class="expandable-row">
+                                <td>现金流项目12</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>8,732</td>
+                                <td></td>
+                            </tr>
+                            <tr class="expandable-row">
+                                <td>现金流项目13</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>6,325</td>
+                                <td></td>
+                            </tr>
+                            <tr class="expandable-row">
+                                <td>现金流项目14</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>4,105</td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 初始化图表
+        document.addEventListener('DOMContentLoaded', function() {
+            // 现金流净额结构图
+            var structureChart = echarts.init(document.getElementById('chart-structure'));
+            var structureOption = {
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: { type: 'shadow' }
+                },
+                grid: {
+                    top: '10%',
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    data: ['经营', '投资', '筹资', '合计']
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [{
+                    data: [8273, 3195, -7039, 255],
+                    type: 'bar',
+                    itemStyle: {
+                        color: function(params) {
+                            var colorList = ['#3076f6', '#39c0c8', '#8e44ad', '#607D8B'];
+                            return colorList[params.dataIndex];
+                        }
+                    },
+                    label: {
+                        show: true,
+                        position: 'top'
+                    }
+                }]
+            };
+            structureChart.setOption(structureOption);
+            
+            // 现金流额趋势图
+            var trendChart = echarts.init(document.getElementById('chart-trend'));
+            var trendOption = {
+                tooltip: {
+                    trigger: 'axis'
+                },
+                grid: {
+                    top: '10%',
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: ['2023-01', '2023-02', '2023-03', '2023-04', '2023-05', '2023-06', 
+                           '2024-01', '2024-02', '2024-03', '2024-04', '2024-05', '2024-06']
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [{
+                    name: '经营性现金流',
+                    type: 'line',
+                    smooth: true,
+                    data: [-6000, 12000, 8000, -3000, -10000, 6000, 12000, 2000, -8000, 8000, -12000, 4000],
+                    lineStyle: { color: '#3076f6' }
+                },
+                {
+                    name: '投资性现金流',
+                    type: 'line',
+                    smooth: true,
+                    data: [-8000, 6000, 12000, -6000, 4000, -2000, 8000, 10000, 4000, -2000, 6000, 8000],
+                    lineStyle: { color: '#39c0c8' }
+                },
+                {
+                    name: '筹资性现金流',
+                    type: 'line',
+                    smooth: true,
+                    data: [6000, 10000, -4000, -12000, -6000, 2000, 6000, -8000, 10000, -6000, -8000, -10000],
+                    lineStyle: { color: '#8e44ad' }
+                }]
+            };
+            trendChart.setOption(trendOption);
+            
+            // 现金流流入结构饼图
+            var inflowPieChart = echarts.init(document.getElementById('chart-inflow-pie'));
+            var inflowPieOption = {
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{a} <br/>{b}: {c} ({d}%)'
+                },
+                legend: {
+                    orient: 'vertical',
+                    right: 10,
+                    top: 'center',
+                    data: ['经营性现金流入金额', '投资性现金流入金额', '筹资性现金流入金额']
+                },
+                series: [{
+                    name: '现金流流入',
+                    type: 'pie',
+                    radius: ['50%', '70%'],
+                    avoidLabelOverlap: false,
+                    label: {
+                        show: false
+                    },
+                    emphasis: {
+                        label: {
+                            show: true,
+                            formatter: '{b}: {c} ({d}%)'
+                        }
+                    },
+                    data: [
+                        {value: 17025, name: '经营性现金流入金额', itemStyle: {color: '#36a3f7'}},
+                        {value: 19340, name: '投资性现金流入金额', itemStyle: {color: '#39c0c8'}},
+                        {value: 12678, name: '筹资性现金流入金额', itemStyle: {color: '#1890ff'}}
+                    ]
+                }]
+            };
+            inflowPieChart.setOption(inflowPieOption);
+            
+            // 现金流流入趋势图
+            var inflowTrendChart = echarts.init(document.getElementById('chart-inflow-trend'));
+            var inflowTrendOption = {
+                tooltip: {
+                    trigger: 'axis'
+                },
+                grid: {
+                    top: '10%',
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: ['2023-01', '2023-02', '2023-03', '2023-04', '2023-05', '2023-06', 
+                           '2024-01', '2024-02', '2024-03', '2024-04', '2024-05', '2024-06']
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [{
+                    name: '经营性现金流入',
+                    type: 'line',
+                    smooth: true,
+                    data: [20000, 14000, 22000, 16000, 18000, 14000, 12000, 15000, 22000, 14000, 16000, 18000],
+                    lineStyle: { color: '#3076f6' }
+                },
+                {
+                    name: '投资性现金流入',
+                    type: 'line',
+                    smooth: true,
+                    data: [18000, 12000, 16000, 24000, 22000, 18000, 14000, 12000, 18000, 10000, 14000, 12000],
+                    lineStyle: { color: '#39c0c8' }
+                }]
+            };
+            inflowTrendChart.setOption(inflowTrendOption);
+            
+            // 现金流流出结构饼图
+            var outflowPieChart = echarts.init(document.getElementById('chart-outflow-pie'));
+            var outflowPieOption = {
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{a} <br/>{b}: {c} ({d}%)'
+                },
+                legend: {
+                    orient: 'vertical',
+                    right: 10,
+                    top: 'center',
+                    data: ['经营性现金流出金额', '投资性现金流出金额', '筹资性现金流出金额']
+                },
+                series: [{
+                    name: '现金流流出',
+                    type: 'pie',
+                    radius: ['50%', '70%'],
+                    avoidLabelOverlap: false,
+                    label: {
+                        show: false
+                    },
+                    emphasis: {
+                        label: {
+                            show: true,
+                            formatter: '{b}: {c} ({d}%)'
+                        }
+                    },
+                    data: [
+                        {value: 19717, name: '经营性现金流出金额', itemStyle: {color: '#36a3f7'}},
+                        {value: 17667, name: '投资性现金流出金额', itemStyle: {color: '#39c0c8'}},
+                        {value: 18834, name: '筹资性现金流出金额', itemStyle: {color: '#1890ff'}}
+                    ]
+                }]
+            };
+            outflowPieChart.setOption(outflowPieOption);
+            
+            // 现金流流出趋势图
+            var outflowTrendChart = echarts.init(document.getElementById('chart-outflow-trend'));
+            var outflowTrendOption = {
+                tooltip: {
+                    trigger: 'axis'
+                },
+                grid: {
+                    top: '10%',
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: ['2023-01', '2023-02', '2023-03', '2023-04', '2023-05', '2023-06', 
+                           '2024-01', '2024-02', '2024-03', '2024-04', '2024-05', '2024-06']
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [{
+                    name: '经营性现金流出',
+                    type: 'line',
+                    smooth: true,
+                    data: [20000, 14000, 22000, 16000, 18000, 14000, 12000, 15000, 22000, 14000, 16000, 18000],
+                    lineStyle: { color: '#3076f6' }
+                },
+                {
+                    name: '投资性现金流出',
+                    type: 'line',
+                    smooth: true,
+                    data: [18000, 12000, 16000, 24000, 22000, 18000, 14000, 12000, 18000, 10000, 14000, 12000],
+                    lineStyle: { color: '#39c0c8' }
+                }]
+            };
+            outflowTrendChart.setOption(outflowTrendOption);
+            
+            // 响应窗口大小变化
+            window.addEventListener('resize', function() {
+                structureChart.resize();
+                trendChart.resize();
+                inflowPieChart.resize();
+                inflowTrendChart.resize();
+                outflowPieChart.resize();
+                outflowTrendChart.resize();
+            });
+        });
+    </script>
+</body>
+</html>
